@@ -20,6 +20,7 @@ import com.xjeffrose.xio.server.XioServerLimits;
 import com.xjeffrose.xio.server.XioServerState;
 import com.xjeffrose.xio.server.XioWebApplicationFirewall;
 import com.xjeffrose.xio.tracing.HttpServerTracingHandler;
+import com.xjeffrose.xio.tracing.XioTracing;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
 import org.junit.Test;

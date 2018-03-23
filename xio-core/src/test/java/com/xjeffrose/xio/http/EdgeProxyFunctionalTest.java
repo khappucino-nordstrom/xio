@@ -15,6 +15,7 @@ import com.xjeffrose.xio.core.SocketAddressHelper;
 import com.xjeffrose.xio.fixtures.JulBridge;
 import com.xjeffrose.xio.fixtures.OkHttpUnsafe;
 import com.xjeffrose.xio.pipeline.SmartHttpPipeline;
+import com.xjeffrose.xio.tracing.XioTracing;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import java.util.Arrays;
@@ -140,7 +141,7 @@ public class EdgeProxyFunctionalTest extends Assert {
                                   this,
                                   prConfig,
                                   new ProxyHandler(
-                                      clientFactory, prConfig, new SocketAddressHelper())))
+                                      clientFactory, prConfig, new SocketAddressHelper(), this.tracing())))
                       // collect the stream of ProxyRouteState into
                       // LinkedHashMap<String, ProxyRouteState> where the
                       // route path is the key and

@@ -12,6 +12,8 @@ import com.xjeffrose.xio.server.XioServerState;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.UnaryOperator;
+
+import com.xjeffrose.xio.tracing.XioTracing;
 import lombok.Getter;
 
 public class ApplicationBootstrap {

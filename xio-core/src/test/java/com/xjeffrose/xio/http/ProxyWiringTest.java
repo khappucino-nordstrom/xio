@@ -1,6 +1,7 @@
 package com.xjeffrose.xio.http;
 
 import com.google.common.collect.ImmutableMap;
+import com.typesafe.config.ConfigFactory;
 import com.xjeffrose.xio.SSL.TlsConfig;
 import com.xjeffrose.xio.application.Application;
 import com.xjeffrose.xio.bootstrap.ApplicationBootstrap;
@@ -9,6 +10,7 @@ import com.xjeffrose.xio.fixtures.OkHttpUnsafe;
 import com.xjeffrose.xio.helpers.ProxyPipelineRequestHandler;
 import com.xjeffrose.xio.pipeline.SmartHttpPipeline;
 import com.xjeffrose.xio.pipeline.XioPipelineFragment;
+import com.xjeffrose.xio.tracing.XioTracing;
 import io.netty.channel.ChannelHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;

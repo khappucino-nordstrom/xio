@@ -5,6 +5,8 @@ import com.xjeffrose.xio.bootstrap.ClientChannelConfiguration;
 import com.xjeffrose.xio.client.ClientConfig;
 import io.netty.channel.ChannelHandler;
 import io.netty.handler.ssl.SslContext;
+import lombok.val;
+
 import java.net.InetSocketAddress;
 import java.util.function.Supplier;
 
@@ -15,7 +17,6 @@ public class ClientState {
   public final ClientConfig config;
   public final InetSocketAddress remote;
   public final SslContext sslContext;
-  public final Supplier<ChannelHandler> tracingHandler;
 
   private static SslContext sslContext(boolean enableTls, ClientConfig clientConfig) {
     if (enableTls) {
@@ -29,32 +30,27 @@ public class ClientState {
       ClientChannelConfiguration channelConfig,
       ClientConfig config,
       InetSocketAddress remote,
-      SslContext sslContext,
-      Supplier<ChannelHandler> tracingHandler) {
+      SslContext sslContext) {
     this.channelConfig = channelConfig;
     this.config = config;
     this.remote = remote;
     this.sslContext = sslContext;
-    this.tracingHandler = tracingHandler;
   }
 
   public ClientState(
       ClientChannelConfiguration channelConfig,
       ClientConfig config,
       InetSocketAddress remote,
-      boolean enableTls,
-      Supplier<ChannelHandler> tracingHandler) {
-    this(channelConfig, config, remote, sslContext(enableTls, config), tracingHandler);
+      boolean enableTls) {
+    this(channelConfig, config, remote, sslContext(enableTls, config));
   }
 
   public ClientState(
       ClientChannelConfiguration channelConfig,
-      ClientConfig config,
-      Supplier<ChannelHandler> tracingHandler) {
+      ClientConfig config) {
     this.channelConfig = channelConfig;
     this.config = config;
     this.remote = config.remote();
     this.sslContext = sslContext(config.isTlsEnabled(), config);
-    this.tracingHandler = tracingHandler;
   }
 }

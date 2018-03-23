@@ -41,7 +41,6 @@ public class ClientConfig {
       log.warn("Client '{}' has useSsl set to false!", name);
     }
     messageLoggerEnabled = config.getBoolean("settings.messageLoggerEnabled");
-
     if (config.getString("localIp").isEmpty()) {
       local = null;
     } else {

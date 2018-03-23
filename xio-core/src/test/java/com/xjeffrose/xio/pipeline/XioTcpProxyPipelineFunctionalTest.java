@@ -1,10 +1,14 @@
 package com.xjeffrose.xio.pipeline;
 
+import com.typesafe.config.ConfigFactory;
 import com.xjeffrose.xio.bootstrap.XioServerBootstrap;
 import com.xjeffrose.xio.helpers.EchoClient;
 import com.xjeffrose.xio.helpers.EchoServer;
 import com.xjeffrose.xio.server.XioServer;
 import java.net.InetSocketAddress;
+
+import com.xjeffrose.xio.tracing.XioTracing;
+import lombok.val;
 import org.junit.Assert;
 import org.junit.Test;
 
