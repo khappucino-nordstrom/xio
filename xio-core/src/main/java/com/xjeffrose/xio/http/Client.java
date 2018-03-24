@@ -73,14 +73,14 @@ public class Client {
                     "negotiation handler",
                     new HttpClientNegotiationHandler(Client.this::buildHttp2Handler))
                 .addLast("codec", CodecPlaceholderHandler.INSTANCE);
-
-            val traceHandler = tracing.newClientHandler(state.config.isTlsEnabled());
-            if (traceHandler != null) {
-              channel
-                .pipeline()
-                .addLast("distributed tracing", tracing.newClientHandler(state.config.isTlsEnabled()));
+            if (tracing != null) {
+              val traceHandler = tracing.newClientHandler(state.config.isTlsEnabled());
+              if (traceHandler != null) {
+                channel
+                  .pipeline()
+                  .addLast("distributed tracing", tracing.newClientHandler(state.config.isTlsEnabled()));
+              }
             }
-
             channel
                 .pipeline()
                 .addLast("application codec", ApplicationCodecPlaceholderHandler.INSTANCE)
