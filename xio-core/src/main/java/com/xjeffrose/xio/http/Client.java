@@ -59,18 +59,10 @@ public class Client {
       ChannelFuture future = connect();
       channel = future.channel();
       ChannelPromise promise = channel.newPromise();
-      future.addListeners(connectionListener, new GenericFutureListener<Future<? super Void>>() {
-        @Override
-        public void operationComplete(Future<? super Void> future) throws Exception {
-          val writeFuture = channel.writeAndFlush(request);
-          writeFuture.addListeners(writeListener, new GenericFutureListener<Future<? super Void>>() {
-            @Override
-            public void operationComplete(Future<? super Void> future) throws Exception {
-              promise.setSuccess();
-            }
-          });
-        }
-      });
+      PromiseCombiner combiner = new PromiseCombiner();
+      combiner.add(future.addListener(connectionListener));
+      combiner.add(channel.writeAndFlush(request).addListener(writeListener));
+      combiner.finish(promise);
       return promise;
     } else {
       return channel.writeAndFlush(request).addListener(writeListener);

@@ -182,7 +182,7 @@ public class HttpClientTracingHandlerIntegrationTest { // extends ITHttpClient<X
         .method(GET)
         .path("/v1/authinit")
         //.host("http://127.0.0.1:8080")
-        .host("https://127.0.0.1" + ":" + server.getPort())
+        .host("127.0.0.1" + ":" + server.getPort())
         .build();
 
     val future = client.write(request);
