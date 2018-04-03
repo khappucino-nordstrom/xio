@@ -55,6 +55,7 @@ public class Client {
   }
 
   public ChannelFuture write(Request request) {
+    /*
     if (channel == null) {
       ChannelFuture future = connect();
       channel = future.channel();
@@ -67,5 +68,28 @@ public class Client {
     } else {
       return channel.writeAndFlush(request).addListener(writeListener);
     }
+    */
+    ///*
+    if (channel == null) {
+      ChannelFuture future = connect();
+      channel = future.channel();
+      ChannelPromise promise = channel.newPromise();
+      future.addListeners(connectionListener, new GenericFutureListener<Future<? super Void>>() {
+        @Override
+        public void operationComplete(Future<? super Void> future) throws Exception {
+          val writeFuture = channel.writeAndFlush(request);
+          writeFuture.addListeners(writeListener, new GenericFutureListener<Future<? super Void>>() {
+            @Override
+            public void operationComplete(Future<? super Void> future) throws Exception {
+              promise.setSuccess();
+            }
+          });
+        }
+      });
+      return promise;
+    } else {
+      return channel.writeAndFlush(request).addListener(writeListener);
+    }
+    //*/
   }
 }

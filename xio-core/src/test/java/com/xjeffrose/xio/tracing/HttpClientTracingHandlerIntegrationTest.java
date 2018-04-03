@@ -23,9 +23,7 @@ import com.xjeffrose.xio.http.Client;
 import com.xjeffrose.xio.http.ClientState;
 import com.xjeffrose.xio.http.DefaultFullRequest;
 import com.xjeffrose.xio.http.DefaultStreamingRequest;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
-import io.netty.buffer.Unpooled;
+import io.netty.buffer.*;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
@@ -177,9 +175,9 @@ public class HttpClientTracingHandlerIntegrationTest { // extends ITHttpClient<X
   public void doStuff() throws Exception {
     val client = newClient(server.getPort(), new FakeTracer(config()));
 
-    val request =
-      DefaultStreamingRequest.builder()
+    val request = DefaultFullRequest.builder()
         .method(GET)
+        .body(new EmptyByteBuf(ByteBufAllocator.DEFAULT))
         .path("/v1/authinit")
         //.host("http://127.0.0.1:8080")
         .host("127.0.0.1" + ":" + server.getPort())
