@@ -129,7 +129,6 @@ public class HttpClientTracingHandlerIntegrationTest { // extends ITHttpClient<X
   }
 
   EventLoopGroup eventLoopGroup = new NioEventLoopGroup(1);
-  HttpClientTracingState state;
 
   private Config config() {
     // TODO(CK): this creates global state across tests we should do something smarter
