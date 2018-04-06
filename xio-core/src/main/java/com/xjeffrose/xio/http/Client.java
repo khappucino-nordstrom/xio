@@ -10,6 +10,7 @@ import io.netty.channel.ChannelPromise;
 import io.netty.util.concurrent.PromiseCombiner;
 import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 @Slf4j
 public class Client {
@@ -19,6 +20,7 @@ public class Client {
   private final ChannelFutureListener connectionListener;
   private final ChannelFutureListener writeListener;
   private Channel channel;
+  private ChannelFuture connectionFuture;
 
   public Client(ClientState state, Supplier<ChannelHandler> appHandler, XioTracing tracing) {
     this.state = state;
@@ -51,7 +53,7 @@ public class Client {
     return b.connect(state.remote);
   }
 
-  public ChannelFuture write(Request request) {
+  public ChannelFuture writex(Request request) {
     if (channel == null) {
       ChannelFuture future = connect();
       channel = future.channel();
@@ -64,5 +66,51 @@ public class Client {
     } else {
       return channel.writeAndFlush(request).addListener(writeListener);
     }
+  }
+
+  public ChannelFuture write(Request request) {
+    if (channel == null) {
+      connectionFuture = connect();
+      channel = connectionFuture.channel();
+      ChannelPromise promise = channel.newPromise();
+      connectionFuture.addListeners(
+          connectionListener,
+          (resultFuture) -> {
+            if (resultFuture.isDone() && resultFuture.isSuccess()) {
+              writeOperation(request, promise);
+            } else {
+              promise.setFailure(resultFuture.cause());
+            }
+          });
+      return promise;
+    } else {
+      if (connectionFuture.isDone() && connectionFuture.isSuccess()) {
+        return channel.writeAndFlush(request).addListener(writeListener);
+      } else {
+        ChannelPromise promise = channel.newPromise();
+        connectionFuture.addListener(
+            (resultFuture) -> {
+              if (resultFuture.isDone() && resultFuture.isSuccess()) {
+                writeOperation(request, promise);
+              } else {
+                promise.setFailure(resultFuture.cause());
+              }
+            });
+        return promise;
+      }
+    }
+  }
+
+  private void writeOperation(Request request, ChannelPromise promise) {
+    val writeFuture = channel.writeAndFlush(request);
+    writeFuture.addListeners(
+        writeListener,
+        (resultFuture) -> {
+          if (resultFuture.isDone() && resultFuture.isSuccess()) {
+            promise.setSuccess();
+          } else {
+            promise.setFailure(resultFuture.cause());
+          }
+        });
   }
 }
